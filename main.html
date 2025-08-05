@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<head>
+	<title>Steam Unplayed</title>
+	<script>
+		let steamid = localStorage["id"];
+		async function getOwnedGames(){
+			const url = " http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=C12F3831CCC6A47C1FE4D87E45194A83&steamid=" +String(steamid)+ "&format=json";
+			try {
+				const response = await fetch(url);
+				if (!response.ok) {
+					throw new Error('Respone status: ${response.status}');
+				}
+				const result = await response.json();
+				console.log(result); 
+			} catch {
+				console.error(error.message);
+			}
+		}
+		
+
+</script>
+</head>
+<body>
+	<script>getOwnedGames();</script>
+</body>
