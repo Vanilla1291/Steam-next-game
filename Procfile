@@ -1,1 +1,1 @@
-web: python server -p $PORT
+web: python restapi.py
