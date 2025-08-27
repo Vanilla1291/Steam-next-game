@@ -8,13 +8,15 @@
 		if (event.key === "Enter") {
 			let steamId = document.getElementById("SteamIdEntry").value
 			localStorage["id"] = steamId;
-			location.replace("./stats.html")
+			
 		}
 		
 	}
 </script>
 </head>
 <body>
+	<form method="POST" action="/stat">
 	<input type="text" name="SteamID" id="SteamIdEntry" placeholder="SteamID" onkeydown="keydowned();">
+</form>
 </body>
 
