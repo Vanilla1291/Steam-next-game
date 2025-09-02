@@ -24,12 +24,17 @@ def getOwnedGames():
 			unplayed = getUnplayedGames(ownedGames)
 			recently = getRecentGames(steam_id)
 			recentTags = getRecentTags(recently)
+			weights = calculateWeights(unplayed, recentTags)
+			sortedGames = sorted(weights, key=weights.get, reverse=True)
+			topGames = sortedGames[0] + ", " + sortedGames[1]
+			
+
 		except Exception as e:
 			print(e)
 			return "<h1>An Error has Occured. Please make your profile public.</h1>"
 	else:
 		print("Error")
-	return render_template("stats.html", games=unplayed)
+	return render_template("stats.html", games=topGames)
 
 
 
@@ -61,11 +66,29 @@ def getRecentTags(recent):
 				tagCount[j] = tagCount[j] + 1
 			else:
 				tagCount[j] = 1
-	print(tagCount)
-		
+	return tagCount
+	
+
+def calculateWeights(unplayed, recentTags):
+	tagsURL = "http://steamspy.com/api.php?request=appdetails&appid="
+	pointsDict = {}
+	points = 0
+	for i in unplayed:
+		r = requests.get(tagsURL + str(unplayed[i])).json() # gets the tags of a single game
+		points = 0
+		for j in r["tags"]:
+			if j in recentTags.keys():
+				points += recentTags[j]
+		pointsDict[i] = points
+	return pointsDict
+
+
+
 	
 
 
-# look at recently played games genre tags and add them in a counter. So for example, say you play to horror games, then the horror tag weighting would be 2.
+# look at recently played games genre tags and add them in a counter. So for example, say you play two horror games, then the horror tag weighting would be 2.
 #So then your most played genre would be up top. Which means that any games with that genre are more likely to be recommended to play.
+#Essentially you get every unplayed game, get its tags and add points to it by adding how many times said tag has appeared in your recently played. So if you haven't played
+#a 2D game but have played 4 2D games recently then any 2D game will get 4 points
 
